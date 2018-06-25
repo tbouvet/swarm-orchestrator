@@ -1,0 +1,12 @@
+- hosts: "{{hosts_list}}"
+  gather_facts: false
+  tasks:
+  - name: Install Ansible packages
+    include_role:
+     name: lagoon.ansible_install
+  - name: Load configuration
+    include_role:
+      name: lagoon.configuration
+  - name: Install Docker
+    include_role:
+      name: lagoon.docker
