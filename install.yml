@@ -1,4 +1,11 @@
-- hosts: "{{hosts_list}}"
+- hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Load configuration
+    include_role:
+      name: lagoon.configuration
+
+- hosts: "{{hostvars['localhost'].lagoon_configuration_params.hosts_list}}"
   gather_facts: false
   tasks:
   - name: Install Ansible packages
