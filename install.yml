@@ -10,3 +10,6 @@
   - name: Install Docker
     include_role:
       name: lagoon.docker
+
+- name: Install Swarm
+  import_playbook: install_swarm.yml

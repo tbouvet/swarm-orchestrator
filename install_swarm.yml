@@ -1,0 +1,37 @@
+- hosts: "{{hosts_list}}"
+  gather_facts: false
+  run_once: true
+  pre_tasks:
+  - name: Load configuration
+    include_role:
+      name: lagoon.configuration
+  tasks:
+  - name: Create a new Swarm Cluster
+    docker_swarm:
+       state: "present"
+       advertise_addr: "{{lagoon_provider_map.private_ip}}"
+       docker_host: "tcp://localhost:2376"
+       cert_path: "{{lagoon_configuration_params.docker.tlscert}}"
+       key_path: "{{lagoon_configuration_params.docker.tlskey}}"
+       cacert_path: "{{lagoon_configuration_params.docker.tlscacert}}"
+       tls_verify: True
+    register: tokens
+  - debug: var=tokens.swarm_facts.JoinTokens.Worker
+  - set_fact:
+      worker_token: "{{tokens.swarm_facts.JoinTokens.Worker}}"
+      manager_token: "{{tokens.swarm_facts.JoinTokens.Manager}}"
+      manager_master: "{{lagoon_provider_map.private_ip}}"
+
+- hosts: "{{hosts_list}}"
+  gather_facts: false
+  pre_tasks:
+  - name: Load configuration
+    include_role:
+      name: lagoon.configuration
+  tasks:
+  - name: Add nodes
+    docker_swarm:
+       state: "join"
+       advertise_addr: "{{lagoon_provider_map.private_ip}}"
+       join_token: "{{hostvars[groups[hosts_list][0]]['worker_token']}}"
+       remote_addrs: ["{{hostvars[groups[hosts_list][0]]['manager_master']}}:2377"]
