@@ -11,9 +11,9 @@
        state: "present"
        advertise_addr: "{{lagoon_provider_map.private_ip}}"
        docker_host: "tcp://localhost:2376"
-       cert_path: "{{lagoon_configuration_params.docker.tlscert}}"
-       key_path: "{{lagoon_configuration_params.docker.tlskey}}"
-       cacert_path: "{{lagoon_configuration_params.docker.tlscacert}}"
+       cert_path: "{{lagoon_configuration_params.orchestrator.docker.tlscert}}"
+       key_path: "{{lagoon_configuration_params.orchestrator.docker.tlskey}}"
+       cacert_path: "{{lagoon_configuration_params.orchestrator.docker.tlscacert}}"
        tls_verify: True
     register: tokens
   - set_fact:
