@@ -4,3 +4,15 @@
   tasks:
   - name: Checkout roles
     command: ansible-galaxy install -r requirements.yml
+
+  - name: Load configuration
+    include_role:
+      name: lagoon.configuration
+
+  - name: Push outputs to engine
+    template:
+      src: "templates/output/{{item}}"
+      dest: "{{output_dir}}/{{item}}"
+    with_items:
+    - params.yaml
+    

@@ -1,0 +1,5 @@
+# params.yaml
+swarm_label: 
+{{ lagoon_configuration_params.swarm_label | to_nice_yaml( width=50) | indent(4, true) }}
+
+hosts_list: {{ lagoon_configuration_params.hosts_list | to_yaml() }}
