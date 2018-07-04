@@ -14,6 +14,15 @@
   - name: Load configuration
     include_role:
       name: lagoon.configuration
+  - name: Mount FS for disks
+    include_role:
+      name: lagoon.filesystem
+    vars:
+      lagoon_fs_dev: "{{item.key}}"
+      lagoon_fs_mount: "{{item.value}}"
+    with_dict:
+    - "{{lagoon_configuration_params.volumes}}"
+    when: lagoon_configuration_params.volumes is defined
   - name: Install Docker
     include_role:
       name: lagoon.docker
