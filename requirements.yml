@@ -11,6 +11,6 @@
   version: origin/master
   name: lagoon.docker
 
-- src: https://github.com/v/ansible-role-filesystem.git
+- src: https://github.com/lagoon-platform/ansible-role-filesystem.git
   version: origin/master
   name: lagoon.filesystem
