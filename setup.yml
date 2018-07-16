@@ -1,3 +1,4 @@
+---
 - hosts: localhost
   connection: local
   gather_facts: false
@@ -15,4 +16,3 @@
       dest: "{{output_dir}}/{{item}}"
     with_items:
     - params.yaml
-    

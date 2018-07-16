@@ -1,15 +1,16 @@
-- src: https://github.com/tbouvet/ansible-role-configuration.git
-  version: origin/feat-init
+---
+- src: https://github.com/lagoon-platform/ansible-role-configuration.git
+  version: origin/master
   name: lagoon.configuration
 
-- src: https://github.com/tbouvet/ansible-role-install.git
-  version: origin/feat-init
+- src: https://github.com/lagoon-platform/ansible-role-install.git
+  version: origin/master
   name: lagoon.ansible_install
-  
-- src: https://github.com/tbouvet/ansible-role-docker.git
-  version: origin/feat-init
+
+- src: https://github.com/lagoon-platform/ansible-role-docker.git
+  version: origin/master
   name: lagoon.docker
-  
-- src: https://github.com/tbouvet/ansible-role-filesystem.git
-  version: origin/feat-init
+
+- src: https://github.com/v/ansible-role-filesystem.git
+  version: origin/master
   name: lagoon.filesystem
