@@ -33,7 +33,6 @@
   tasks:
   - name: Refresh Inventory
     shell: ${ANSIBLE_INVENTORY} --refresh-cache
-    when: ec2.changed
     changed_when: false
   - meta: refresh_inventory
 
