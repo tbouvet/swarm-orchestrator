@@ -1,0 +1,40 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Load configuration
+    include_role:
+      name: lagoon.configuration
+
+- hosts: "{{hostvars['localhost'].lagoon_configuration_params.hosts_list}}"
+  gather_facts: false
+  tasks:
+  - name: Install Ansible packages
+    include_role:
+      name: lagoon.ansible_install
+  - name: Load configuration
+    include_role:
+      name: lagoon.configuration
+  - name: Mount FS for disks
+    include_role:
+      name: lagoon.filesystem
+    vars:
+      lagoon_fs_dev: "{{item.key}}"
+      lagoon_fs_mount: "{{item.value}}"
+    with_dict:
+    - "{{lagoon_configuration_params.volumes}}"
+    when: lagoon_configuration_params.volumes is defined
+  - name: Install Docker
+    include_role:
+      name: lagoon.docker
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Refresh Inventory
+    shell: ${ANSIBLE_INVENTORY} --refresh-cache
+    changed_when: false
+  - meta: refresh_inventory
+
+- name: Install Swarm
+  import_playbook: install_swarm.yml
