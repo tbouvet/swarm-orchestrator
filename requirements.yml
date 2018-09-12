@@ -4,11 +4,11 @@
   name: lagoon.configuration
 
 - src: https://github.com/lagoon-platform/ansible-role-install.git
-  version: alpha1
+  version: alpha2
   name: lagoon.ansible_install
 
 - src: https://github.com/lagoon-platform/ansible-role-docker.git
-  version: alpha1
+  version: alpha2
   name: lagoon.docker
 
 - src: https://github.com/lagoon-platform/ansible-role-filesystem.git

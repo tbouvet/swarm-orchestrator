@@ -5,13 +5,22 @@
   - name: Load configuration
     include_role:
       name: lagoon.configuration
+  - name: Refresh Inventory
+    shell: ${ANSIBLE_INVENTORY} --refresh-cache
+    changed_when: false
+  - meta: refresh_inventory
 
 - hosts: "{{hostvars['localhost'].lagoon_configuration_params.hosts_list}}"
   gather_facts: false
   tasks:
+  - name: Define proxy if needed
+    set_fact:
+      lagoon_proxy: "{{hostvars['localhost'].lagoon_configuration_params.proxy | default({})}}"
   - name: Install Ansible packages
     include_role:
       name: lagoon.ansible_install
+    vars:
+      lagoon_install_proxy: "{{lagoon_proxy}}"
   - name: Load configuration
     include_role:
       name: lagoon.configuration
@@ -27,6 +36,12 @@
   - name: Install Docker
     include_role:
       name: lagoon.docker
+    vars:
+      lagoon_docker_proxy: "{{lagoon_proxy}}"
+      lagoon_docker_params: "{{lagoon_configuration_params.orchestrator.docker.params}}"
+      lagoon_docker_ca_cn: "{{lagoon_configuration_params.client.name}}_{{lagoon_configuration_params.client.uid}}"
+      lagoon_docker_provider: "{{lagoon_provider_map}}"
+      lagoon_docker_all: "{{lagoon_configuration_params.orchestrator.docker}}"
 
 - hosts: localhost
   gather_facts: false
