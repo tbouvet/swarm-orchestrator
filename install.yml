@@ -39,7 +39,7 @@
     vars:
       lagoon_docker_proxy: "{{lagoon_proxy}}"
       lagoon_docker_params: "{{lagoon_configuration_params.orchestrator.docker.params}}"
-      lagoon_docker_ca_cn: "{{lagoon_configuration_params.client.name}}_{{lagoon_configuration_params.client.uid}}"
+      lagoon_docker_ca_cn: "{{lagoon_configuration_params.environment.name}}_{{lagoon_configuration_params.environment.uid}}"
       lagoon_docker_provider: "{{lagoon_provider_map}}"
       lagoon_docker_all: "{{lagoon_configuration_params.orchestrator.docker}}"
 
