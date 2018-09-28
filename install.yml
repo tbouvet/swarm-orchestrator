@@ -1,29 +1,19 @@
 ---
-- hosts: localhost
+- hosts: nodes
   gather_facts: false
-  tasks:
+  pre_tasks:
   - name: Load configuration
     include_role:
       name: lagoon.configuration
-  - name: Refresh Inventory
-    shell: ${ANSIBLE_INVENTORY} --refresh-cache
-    changed_when: false
-  - meta: refresh_inventory
-
-- hosts: "{{hostvars['localhost'].lagoon_configuration_params.hosts_list}}"
-  gather_facts: false
   tasks:
   - name: Define proxy if needed
     set_fact:
-      lagoon_proxy: "{{hostvars['localhost'].lagoon_configuration_params.proxy | default({})}}"
+      lagoon_proxy: "{{lagoon_configuration_params.proxy | default({})}}"
   - name: Install Ansible packages
     include_role:
       name: lagoon.ansible_install
     vars:
       lagoon_install_proxy: "{{lagoon_proxy}}"
-  - name: Load configuration
-    include_role:
-      name: lagoon.configuration
   - name: Mount FS for disks
     include_role:
       name: lagoon.filesystem
@@ -33,6 +23,9 @@
     with_dict:
     - "{{lagoon_configuration_params.volumes}}"
     when: lagoon_configuration_params.volumes is defined
+  - name: Define custom variables
+    set_fact:
+      lagoon_nodes_ips: "{{ groups['managers'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"
   - name: Install Docker
     include_role:
       name: lagoon.docker
@@ -42,14 +35,7 @@
       lagoon_docker_ca_cn: "{{lagoon_configuration_params.environment.name}}_{{lagoon_configuration_params.environment.uid}}"
       lagoon_docker_provider: "{{lagoon_provider_map}}"
       lagoon_docker_all: "{{lagoon_configuration_params.orchestrator.docker}}"
-
-- hosts: localhost
-  gather_facts: false
-  tasks:
-  - name: Refresh Inventory
-    shell: ${ANSIBLE_INVENTORY} --refresh-cache
-    changed_when: false
-  - meta: refresh_inventory
+      lagoon_docker_nodes_ip: "{{hostvars[groups['managers'][0]].lagoon_nodes_ips}}"
 
 - name: Install Swarm
   import_playbook: install_swarm.yml
