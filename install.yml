@@ -14,15 +14,26 @@
       name: lagoon.ansible_install
     vars:
       lagoon_install_proxy: "{{lagoon_proxy}}"
-  - name: Mount FS for disks
-    include_role:
-      name: lagoon.filesystem
-    vars:
-      lagoon_fs_dev: "{{item.key}}"
-      lagoon_fs_mount: "{{item.value}}"
-    with_dict:
-    - "{{lagoon_configuration_params.volumes}}"
-    when: lagoon_configuration_params.volumes is defined
+  - block:
+    - name: Set devices to mount
+      set_fact:
+        lagoon_devices: "{{item.devices}}"
+      loop: "{{lagoon_configuration_params.volumes}}"
+      loop_control:
+        label: "{{item.name}}"
+      when:
+      - item.name == inventory_hostname
+    - name: Mount FS for disks
+      include_role:
+        name: lagoon.filesystem
+      vars:
+        lagoon_fs_dev: "{{item.device}}"
+        lagoon_fs_mount: "{{item.volume}}"
+      loop: "{{lagoon_devices}}"
+      loop_control:
+        label: "{{item.volume}}"
+    when:
+    - lagoon_configuration_params.volumes is defined
   - name: Define custom variables
     set_fact:
       lagoon_nodes_ips: "{{ groups['managers'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"

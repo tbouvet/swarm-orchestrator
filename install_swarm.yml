@@ -1,6 +1,6 @@
 ---
 - hosts: managers
-  gather_facts: false
+  gather_facts: true
   run_once: true
   pre_tasks:
   - name: Load configuration
@@ -18,7 +18,7 @@
       manager_master: "{{lagoon_provider_map.private_ip}}"
 
 - hosts: managers
-  gather_facts: false
+  gather_facts: true
   pre_tasks:
   - name: Load configuration
     include_role:

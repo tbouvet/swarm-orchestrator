@@ -7,8 +7,8 @@
   version: alpha2
   name: lagoon.ansible_install
 
-- src: https://github.com/lagoon-platform/ansible-role-docker.git
-  version: alpha3
+- src: https://github.com/tbouvet/ansible-role-docker.git
+  version: fix-group
   name: lagoon.docker
 
 - src: https://github.com/lagoon-platform/ansible-role-filesystem.git
