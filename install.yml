@@ -4,49 +4,49 @@
   pre_tasks:
   - name: Load configuration
     include_role:
-      name: lagoon.configuration
+      name: ekara.configuration
   tasks:
   - name: Define proxy if needed
     set_fact:
-      lagoon_proxy: "{{lagoon_configuration_params.proxy | default({})}}"
+      ekara_proxy: "{{ekara_configuration_params.proxy | default({})}}"
   - name: Install Ansible packages
     include_role:
-      name: lagoon.ansible_install
+      name: ekara.ansible_install
     vars:
-      lagoon_install_proxy: "{{lagoon_proxy}}"
+      ekara_install_proxy: "{{ekara_proxy}}"
   - block:
     - name: Set devices to mount
       set_fact:
-        lagoon_devices: "{{item.devices}}"
-      loop: "{{lagoon_configuration_params.volumes}}"
+        ekara_devices: "{{item.devices}}"
+      loop: "{{ekara_configuration_params.volumes}}"
       loop_control:
         label: "{{item.name}}"
       when:
       - item.name == inventory_hostname
     - name: Mount FS for disks
       include_role:
-        name: lagoon.filesystem
+        name: ekara.filesystem
       vars:
-        lagoon_fs_dev: "{{item.device}}"
-        lagoon_fs_mount: "{{item.volume}}"
-      loop: "{{lagoon_devices}}"
+        ekara_fs_dev: "{{item.device}}"
+        ekara_fs_mount: "{{item.volume}}"
+      loop: "{{ekara_devices}}"
       loop_control:
         label: "{{item.volume}}"
     when:
-    - lagoon_configuration_params.volumes is defined
+    - ekara_configuration_params.volumes is defined
   - name: Define custom variables
     set_fact:
-      lagoon_nodes_ips: "{{ groups['managers'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"
+      ekara_nodes_ips: "{{ groups['managers'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | join(',') }}"
   - name: Install Docker
     include_role:
-      name: lagoon.docker
+      name: ekara.docker
     vars:
-      lagoon_docker_proxy: "{{lagoon_proxy}}"
-      lagoon_docker_params: "{{lagoon_configuration_params.orchestrator.docker.params}}"
-      lagoon_docker_ca_cn: "{{lagoon_configuration_params.environment.name}}_{{lagoon_configuration_params.environment.uid}}"
-      lagoon_docker_provider: "{{lagoon_provider_map}}"
-      lagoon_docker_all: "{{lagoon_configuration_params.orchestrator.docker}}"
-      lagoon_docker_nodes_ip: "{{hostvars[groups['managers'][0]].lagoon_nodes_ips}}"
+      ekara_docker_proxy: "{{ekara_proxy}}"
+      ekara_docker_params: "{{ekara_configuration_params.orchestrator.docker.params}}"
+      ekara_docker_ca_cn: "{{ekara_configuration_params.environment.name}}_{{ekara_configuration_params.environment.uid}}"
+      ekara_docker_provider: "{{ekara_provider_map}}"
+      ekara_docker_all: "{{ekara_configuration_params.orchestrator.docker}}"
+      ekara_docker_nodes_ip: "{{hostvars[groups['managers'][0]].ekara_nodes_ips}}"
 
 - name: Install Swarm
   import_playbook: install_swarm.yml

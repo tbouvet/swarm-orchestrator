@@ -1,16 +1,16 @@
 ---
-- src: https://github.com/lagoon-platform/ansible-role-configuration.git
-  version: alpha1
-  name: lagoon.configuration
+- src: https://github.com/ekara-platform/ansible-role-configuration.git
+  version: alpha4
+  name: ekara.configuration
 
-- src: https://github.com/lagoon-platform/ansible-role-install.git
-  version: alpha2
-  name: lagoon.ansible_install
+- src: https://github.com/ekara-platform/ansible-role-install.git
+  version: alpha4
+  name: ekara.ansible_install
 
-- src: https://github.com/lagoon-platform/ansible-role-docker.git
-  version: master
-  name: lagoon.docker
+- src: https://github.com/ekara-platform/ansible-role-docker.git
+  version: alpha4
+  name: ekara.docker
 
-- src: https://github.com/lagoon-platform/ansible-role-filesystem.git
-  version: alpha1
-  name: lagoon.filesystem
+- src: https://github.com/ekara-platform/ansible-role-filesystem.git
+  version: alpha4
+  name: ekara.filesystem

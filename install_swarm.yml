@@ -5,29 +5,29 @@
   pre_tasks:
   - name: Load configuration
     include_role:
-      name: lagoon.configuration
+      name: ekara.configuration
   tasks:
   - name: Create a new Swarm Cluster
     docker_swarm:
       state: "present"
-      advertise_addr: "{{lagoon_provider_map.private_ip}}"
+      advertise_addr: "{{ekara_provider_map.private_ip}}"
     register: tokens
   - set_fact:
       worker_token: "{{tokens.swarm_facts.JoinTokens.Worker}}"
       manager_token: "{{tokens.swarm_facts.JoinTokens.Manager}}"
-      manager_master: "{{lagoon_provider_map.private_ip}}"
+      manager_master: "{{ekara_provider_map.private_ip}}"
 
 - hosts: managers
   gather_facts: true
   pre_tasks:
   - name: Load configuration
     include_role:
-      name: lagoon.configuration
+      name: ekara.configuration
   tasks:
   - name: Add Swarm managers
     docker_swarm:
       state: "join"
-      advertise_addr: "{{lagoon_provider_map.private_ip}}"
+      advertise_addr: "{{ekara_provider_map.private_ip}}"
       join_token: "{{hostvars[groups['managers'][0]]['manager_token']}}"
       remote_addrs: ["{{hostvars[groups['managers'][0]]['manager_master']}}:2377"]
 
@@ -36,11 +36,11 @@
   pre_tasks:
   - name: Load configuration
     include_role:
-      name: lagoon.configuration
+      name: ekara.configuration
   tasks:
   - name: Add Swarm workers
     docker_swarm:
       state: "join"
-      advertise_addr: "{{lagoon_provider_map.private_ip}}"
+      advertise_addr: "{{ekara_provider_map.private_ip}}"
       join_token: "{{hostvars[groups['managers'][0]]['worker_token']}}"
       remote_addrs: ["{{hostvars[groups['managers'][0]]['manager_master']}}:2377"]
