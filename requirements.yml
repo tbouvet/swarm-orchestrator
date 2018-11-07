@@ -4,11 +4,11 @@
   name: ekara.configuration
 
 - src: https://github.com/ekara-platform/ansible-role-install.git
-  version: alpha4
+  version: master
   name: ekara.ansible_install
 
 - src: https://github.com/ekara-platform/ansible-role-docker.git
-  version: alpha4
+  version: master
   name: ekara.docker
 
 - src: https://github.com/ekara-platform/ansible-role-filesystem.git
