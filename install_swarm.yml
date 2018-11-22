@@ -1,46 +1,70 @@
 ---
 - hosts: managers
   gather_facts: true
-  run_once: true
-  pre_tasks:
-  - name: Load configuration
-    include_role:
-      name: ekara.configuration
   tasks:
-  - name: Create a new Swarm Cluster
+  - name: Inspect swarm
     docker_swarm:
-      state: "present"
-      advertise_addr: "{{ekara_provider_map.private_ip}}"
+      state: inspect
     register: tokens
   - set_fact:
-      worker_token: "{{tokens.swarm_facts.JoinTokens.Worker}}"
-      manager_token: "{{tokens.swarm_facts.JoinTokens.Manager}}"
-      manager_master: "{{ekara_provider_map.private_ip}}"
+      swarm_info:
+        worker_token: "{{tokens.swarm_facts.JoinTokens.Worker}}"
+        manager_token: "{{tokens.swarm_facts.JoinTokens.Manager}}"
+        manager_master: "{{ansible_facts.default_ipv4.address}}"
+    when:
+    - tokens.swarm_facts is defined
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+  - set_fact:
+      swarm_info: "{{hostvars[item].swarm_info}}"
+    loop: "{{groups['managers']}}"
+    when:
+    - hostvars[item].swarm_info is defined
 
 - hosts: managers
   gather_facts: true
-  pre_tasks:
-  - name: Load configuration
-    include_role:
-      name: ekara.configuration
+  run_once: true
+  tasks:
+  - block:
+    - name: Create a new Swarm Cluster
+      docker_swarm:
+        state: "present"
+        advertise_addr: "{{ansible_facts.default_ipv4.address}}"
+      register: tokens
+    - set_fact:
+        swarm_info:
+          worker_token: "{{tokens.swarm_facts.JoinTokens.Worker}}"
+          manager_token: "{{tokens.swarm_facts.JoinTokens.Manager}}"
+          manager_master: "{{ansible_facts.default_ipv4.address}}"
+    when:
+    - hostvars['localhost'].swarm_info is not defined
+- hosts: localhost
+  gather_facts: false
+  tasks:
+  - set_fact:
+      swarm_info: "{{hostvars[item].swarm_info}}"
+    loop: "{{groups['managers']}}"
+    when:
+    - hostvars[item].swarm_info is defined
+
+- hosts: managers
+  gather_facts: true
   tasks:
   - name: Add Swarm managers
     docker_swarm:
       state: "join"
-      advertise_addr: "{{ekara_provider_map.private_ip}}"
-      join_token: "{{hostvars[groups['managers'][0]]['manager_token']}}"
-      remote_addrs: ["{{hostvars[groups['managers'][0]]['manager_master']}}:2377"]
+      advertise_addr: "{{ansible_facts.default_ipv4.address}}"
+      join_token: "{{hostvars['localhost'].swarm_info.manager_token}}"
+      remote_addrs: ["{{hostvars['localhost'].swarm_info.manager_master}}:2377"]
 
 - hosts: workers
-  gather_facts: false
-  pre_tasks:
-  - name: Load configuration
-    include_role:
-      name: ekara.configuration
+  gather_facts: true
   tasks:
   - name: Add Swarm workers
     docker_swarm:
       state: "join"
-      advertise_addr: "{{ekara_provider_map.private_ip}}"
-      join_token: "{{hostvars[groups['managers'][0]]['worker_token']}}"
-      remote_addrs: ["{{hostvars[groups['managers'][0]]['manager_master']}}:2377"]
+      advertise_addr: "{{ansible_facts.default_ipv4.address}}"
+      join_token: "{{hostvars['localhost'].swarm_info.worker_token}}"
+      remote_addrs: ["{{hostvars['localhost'].swarm_info.manager_master}}:2377"]
