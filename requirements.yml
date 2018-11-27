@@ -1,16 +1,16 @@
 ---
 - src: https://github.com/ekara-platform/ansible-role-configuration.git
-  version: 1.0.0-beta1
+  version: v1.0.0-beta1
   name: ekara.configuration
 
 - src: https://github.com/ekara-platform/ansible-role-install.git
-  version: 1.0.0-beta1
+  version: v1.0.0-beta1
   name: ekara.ansible_install
 
 - src: https://github.com/ekara-platform/ansible-role-docker.git
-  version: 1.0.0-beta1
+  version: v1.0.0-beta1
   name: ekara.docker
 
 - src: https://github.com/ekara-platform/ansible-role-filesystem.git
-  version: 1.0.0-beta1
+  version: v1.0.0-beta1
   name: ekara.filesystem
