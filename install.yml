@@ -65,7 +65,7 @@
       ekara_docker_all: "{{ekara_configuration_params.orchestrator.docker}}"
       ekara_docker_nodes_ip: "{{ekara_nodes_ips}}"
       ekara_labels: "{{ekara_configuration_params.labels|default({})}}"
-      ekara_docker_default_version: "{{ekara_docker_default_version}}"
+      ekara_docker_default_version: "{{ekara_docker_recommended_version}}"
 
 - hosts: nodes:!{{hostvars['localhost'].nodeset}}
   gather_facts: false

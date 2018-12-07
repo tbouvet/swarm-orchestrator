@@ -1,0 +1,5 @@
+---
+#{% if ekara_configuration_params.volumes is defined %} Volumes to mount
+volumes:
+{{ekara_configuration_params.volumes | to_nice_yaml | indent(0,true)}}
+#{% endif %}

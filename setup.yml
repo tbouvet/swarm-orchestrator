@@ -2,6 +2,14 @@
 - hosts: localhost
   connection: local
   gather_facts: false
+  pre_tasks:
+  - name: Load configuration
+    include_role:
+      name: ekara.configuration
   tasks:
   - name: Checkout roles
     command: ansible-galaxy install -r requirements.yml
+  - name: Push outputs to engine
+    template:
+      src: "templates/output/params.yaml.j2"
+      dest: "{{output_dir}}/params.yaml"
