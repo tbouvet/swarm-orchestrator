@@ -11,6 +11,6 @@
   version: master
   name: ekara.docker
 
-- src: https://github.com/ekara-platform/ansible-role-filesystem.git
-  version: v1.0.0-beta1
+- src: https://github.com/tbouvet/ansible-role-filesystem.git
+  version: fix-nvme
   name: ekara.filesystem

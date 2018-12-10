@@ -34,11 +34,13 @@
       include_role:
         name: ekara.filesystem
       vars:
-        ekara_fs_dev: "{{item.device}}"
-        ekara_fs_mount: "{{item.volume}}"
+        ekara_fs_dev: "{{device_to_mount.device}}"
+        ekara_fs_mount: "{{device_to_mount.volume}}"
+        ekara_fs_volume: "{{device_to_mount.volume_id | default('')}}"
       loop: "{{ekara_devices}}"
       loop_control:
-        label: "{{item.volume}}"
+        loop_var: device_to_mount
+        label: "{{device_to_mount.volume}}"
       when:
       - ekara_devices is defined
     when:
